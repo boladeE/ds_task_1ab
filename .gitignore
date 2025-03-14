@@ -1,0 +1,12 @@
+.venv
+
+.env
+
+data
+
+Dataset Generator/data
+
+Dataset Generator/.ipynb_checkpoints
+
+README.md
+
