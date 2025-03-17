@@ -13,7 +13,7 @@ load_dotenv()
 def clean_dataset(file_path):
     # Load dataset
     df = pd.read_csv(file_path)  # Assuming tab-separated data
-    df = df[:1000]
+    
     # Step 1: Remove unwanted characters and symbols
     def clean_text(text):
         if isinstance(text, str):
@@ -39,9 +39,6 @@ def clean_dataset(file_path):
     df['CustomerID'] = df['CustomerID'].str.replace(r'[^0-9]', '', regex=True)
     df['CustomerID'] = pd.to_numeric(df['CustomerID'], errors='coerce')
 
-    # # Step 5: Clean and standardize Country
-    # df['Country'] = df['Country'].str.replace(r'[^a-zA-Z\s]', '', regex=True)
-    # df['Country'] = df['Country'].str.strip()
 
     # Step 5: Clean and standardize Country
     def clean_country(country):
