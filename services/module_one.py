@@ -132,11 +132,12 @@ def recommend_products(index, model, query, top_k=5):
 # Main Execution
 def flask_api_route(query):
     # Step 1: Clean the dataset
-    file_path = 'data\dataset\dataset.csv'
-    cleaned_df = clean_dataset(file_path)
+    # file_path = 'data\dataset\dataset.csv'
+    # cleaned_df = clean_dataset(file_path)
 
     # Step 2: Set up Pinecone and insert product embeddings
-    pinecone_api_key = "pcsk_2o3gSX_C7QaUf2eEL4bM6T1LniMu13G8Qdh5pBJhrsQgKgjTvZAm8PoLC4R75keviZMp7X"
+    pinecone_api_key = os.getenv('PINECONE_API_KEY')
+    pinecone_api_key = pinecone_api_key
     index_name = "product-recommendations"
     index = setup_pinecone(pinecone_api_key, index_name)
 
@@ -144,8 +145,8 @@ def flask_api_route(query):
     model = SentenceTransformer('all-MiniLM-L6-v2')
 
     # # Generate embeddings and insert into Pinecone
-    product_embeddings = generate_product_embeddings(cleaned_df, model)
-    insert_into_pinecone(index, product_embeddings)
+    # product_embeddings = generate_product_embeddings(cleaned_df, model)
+    # insert_into_pinecone(index, product_embeddings)
 
     # Step 3: Test the recommendation service
     recommendation = recommend_products(index, model, query)
