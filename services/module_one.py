@@ -55,7 +55,7 @@ def clean_dataset(file_path):
     # Step 6: Handle missing values
     df = df.dropna()
     df = df[df['StockCode'].str.strip() != '']
-    print(df.iloc[386])
+
     # Step 7: Remove duplicates
     df = df.drop_duplicates(subset=['InvoiceNo', 'StockCode', 'Description'])
 
@@ -69,7 +69,7 @@ def setup_pinecone(api_key, index_name, dimension=384):
     pinecone = Pinecone(api_key=os.getenv('PINECONE_API_KEY'))
     # Create an index if it doesn't exist
     if index_name not in pinecone.list_indexes().names():
-        print("I think it's going to create a new index")
+        
         pinecone.create_index(index_name, 
                               dimension=dimension,
                                 spec=ServerlessSpec(
@@ -112,7 +112,7 @@ def recommend_products(index, model, query, top_k=5):
     # Query Pinecone index
     results = index.query(vector=query_embedding.tolist(), top_k=top_k, include_metadata=True)
 
-    # print(results)
+    
     # Extract product matches
     matches = []
     for match in results['matches']:
@@ -153,4 +153,3 @@ def flask_api_route(query):
 # if __name__ == "__main__":
 #     query = "blue dress"
 #     matches = flask_api_route(query)
-#     print(matches)
