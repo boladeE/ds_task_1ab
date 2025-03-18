@@ -60,13 +60,12 @@ def clean_dataset(file_path):
     df = df.drop_duplicates(subset=['InvoiceNo', 'StockCode', 'Description'])
 
     # Step 8: Save cleaned dataset
-    # df.to_csv('cleaned_ecommerce_data.csv', index=True)
+    df.to_csv('cleaned_ecommerce_data.csv', index=True)
     return df
 
 # Step 2: Vector Database Creation
 def setup_pinecone(api_key, index_name, dimension=384):
     # Initialize Pinecone
-    #  pinecone.init(api_key=api_key, environment="us-west1-gcp")
     pinecone = Pinecone(api_key=os.getenv('PINECONE_API_KEY'))
     # Create an index if it doesn't exist
     if index_name not in pinecone.list_indexes().names():
@@ -102,7 +101,6 @@ def generate_product_embeddings(df, model):
 
 def insert_into_pinecone(index, product_embeddings):
     # Insert vectors into Pinecone
-    print('getting')
     vectors = [(item["id"], item["vector"], item["metadata"]) for item in product_embeddings]
     index.upsert(vectors)
 
@@ -132,12 +130,11 @@ def recommend_products(index, model, query, top_k=5):
 # Main Execution
 def flask_api_route(query):
     # Step 1: Clean the dataset
-    # file_path = 'data\dataset\dataset.csv'
-    # cleaned_df = clean_dataset(file_path)
+    file_path = 'data\dataset\dataset.csv'
+    cleaned_df = clean_dataset(file_path)
 
     # Step 2: Set up Pinecone and insert product embeddings
     pinecone_api_key = os.getenv('PINECONE_API_KEY')
-    pinecone_api_key = pinecone_api_key
     index_name = "product-recommendations"
     index = setup_pinecone(pinecone_api_key, index_name)
 
@@ -145,8 +142,8 @@ def flask_api_route(query):
     model = SentenceTransformer('all-MiniLM-L6-v2')
 
     # # Generate embeddings and insert into Pinecone
-    # product_embeddings = generate_product_embeddings(cleaned_df, model)
-    # insert_into_pinecone(index, product_embeddings)
+    product_embeddings = generate_product_embeddings(cleaned_df, model)
+    insert_into_pinecone(index, product_embeddings)
 
     # Step 3: Test the recommendation service
     recommendation = recommend_products(index, model, query)
